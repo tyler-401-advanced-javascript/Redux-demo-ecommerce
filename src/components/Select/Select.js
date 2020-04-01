@@ -1,25 +1,22 @@
 import React from 'react';
-import { Filter, filterBy } from '../../store/categoryFilterer'
-import { connect } from 'react-redux'
+import { connect } from 'react-redux';
+import { CategoryList } from '../../store/reducers/category';
+import { changeCategory } from '../../store/actions';
 
-function Select(props) {
-
+function Select({ changeCategory, category }) {
   return (
-    <select onChange={(e) => e.target.value === 'none' ? null : props.filterBy(e.target.value)}>
-      <option selected value={'none'}>Select Category</option>
-      <option value={Filter.ALL}>-</option>
-      <option value={Filter.TOOL}>Tools</option>
-      <option value={Filter.TOY}>Toys</option>
-      <option value={Filter.PERSON}>People</option>
+    <select value={category} onChange={e => changeCategory(e.target.value)}>
+      <option value={CategoryList.Filter.ALL}>
+        Select Category
+      </option>
+      <option value={CategoryList.Filter.TOOL}>Tools</option>
+      <option value={CategoryList.Filter.TOY}>Toys</option>
+      <option value={CategoryList.Filter.PERSON}>People</option>
     </select>
-  )
+  );
 }
 
-const mapStateToProps = (state) => {
-  return { categoryFilterer: state.categoryFilterer }
-}
+//we dont need mapStateToProps becuase this component doesnt give a shit what the state is! It only sets the state, so we pull in mapDISPATCHtoprops. (it will be dispatching actions)
+const mapStateToProps = state => ({ category: state.category });
 
-const mapDispatchToProps = { filterBy }
-
-
-export default connect(mapStateToProps, mapDispatchToProps)(Select)
+export default connect(mapStateToProps, { changeCategory })(Select);

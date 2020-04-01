@@ -1,18 +1,20 @@
 import React from 'react'
 import { Container } from 'react-bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css';
+import InputForm from '../Form/InputForm'
 
 
 import './App.scss' 
-import Category from '../Category/Category'
+import Results from '../Results/Results'
 import Select from '../Select/Select'
 
 function App() {
   return (
     <Container className="App">
-      <h1>Were gonna sell you some sub-prime mortgages baby.</h1>
+      <h1>Tyler's Online Shop of Duhickeys</h1>
       <Select />
-      <Category />
+      <Results />
+      <InputForm />
 
     </Container>
   )
