@@ -4,6 +4,7 @@ import products from './reducers/products';
 import category from './reducers/category';
 import cart from './reducers/cart';
 import views from './reducers/views';
+import auth from './reducers/auth'
 
 //combine all of the reducers into a single reducer with combineReducers()
 const store = configureStore({
@@ -11,7 +12,8 @@ const store = configureStore({
     products, 
     category,
     cart,
-    views
+    views,
+    auth
   }
 })
 

@@ -13,19 +13,27 @@ import CartCount from '../Cart/CartCount';
 import DataEntryForms from '../Form/DataEntryForms';
 import Cart from '../Cart/Cart';
 import { If } from '../util';
+import Auth from '../util/Auth';
+import LoginForm from '../Form/LoginForm';
 
 //state and actions
 import { Views } from '../../store/reducers/views';
+
+//constants
+import { Permission } from '../../config/constants';
 
 function App({ view }) {
   return (
     <Container className="App">
       <If condition={view === Views.MAIN}>
         <h3>Tyler's Online Shop of Duhickeys</h3>
-        <CartCount />
-        <Select />
-        <Results />
-        <DataEntryForms />
+        <LoginForm />
+        <Auth required={Permission.READ}>
+          <CartCount />
+          <Select />
+          <Results />
+          <DataEntryForms />
+        </Auth>
       </If>
       <If condition={view === Views.CART}>
         <h3>Your Cart</h3>

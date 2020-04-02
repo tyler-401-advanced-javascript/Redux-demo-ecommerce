@@ -11,18 +11,22 @@ export default function cartReducer(state = initialState, action) {
     case 'ADD_CART_ITEM':
       //if the item is already in the cart, add that item's number
 
-      const inCart = state.items.find(item => item.id === action.payload.item.id);
+      const inCart = state.items.find(item => item._id === action.payload.item._id);
 
       if (inCart) {
-        const newItems = [...state.items].map(item => {
-          if (item.id === action.payload.item.id) {
-            item.number += action.payload.number
-          }
-          return item
-        })
-        
+        const newItems = state.items.map(item => {
+          return item._id === action.payload.item._id
+            ? { ...item, number: item.number + action.payload.number }
+            : item;
+        });
+
         //return the new state
-        return { totalItems: state.totalItems + action.payload.number, items: newItems };
+        const newState = {
+          totalItems: state.totalItems + action.payload.number,
+          items: newItems
+        };
+        console.log(newState);
+        return newState;
 
         //else if the item is not in the cart..
       } else {
@@ -39,6 +43,18 @@ export default function cartReducer(state = initialState, action) {
         items: state.items.filter(item => item.name !== action.payload.name),
         totalItems: state.totalItems - action.payload.number
       };
+    case 'UPDATE_CART_ITEM':
+      const newItems = state.items.map(item => {
+        return item.id === action.payload.item.id
+          ? { ...item, number: action.payload.number }
+          : item ;
+      });
+      const newTotal = newItems.reduce((acc, item, i) => {
+        acc += item.number;
+        return acc;
+      }, 0);
+      console.log({ newItems, newTotal } );
+      return { items: newItems, totalItems: newTotal };
 
     case 'EMPTY_CART':
       return initialState;

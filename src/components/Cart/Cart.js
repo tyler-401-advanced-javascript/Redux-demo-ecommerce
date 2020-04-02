@@ -1,13 +1,13 @@
 import React from 'react';
-import { Table, Button } from 'react-bootstrap';
+import { Table, Button, Form } from 'react-bootstrap';
 import { connect } from 'react-redux';
 
 import { If } from '../util';
 
-import { changeView, deleteCartItem } from '../../store/actions';
+import { changeView, deleteCartItem, updateCartItem } from '../../store/actions';
 import { Views } from '../../store/reducers/views';
 
-function Cart({ cart, changeView, deleteCartItem }) {
+function Cart({ cart, changeView, deleteCartItem, updateCartItem }) {
   const calculateTotalCost = () => {
     //yep, we used reduce, booyah
     return cart.items.reduce((acc, item) => {
@@ -16,8 +16,15 @@ function Cart({ cart, changeView, deleteCartItem }) {
     }, 0);
   };
 
+  const handleUpdateCartItem = (e, item) => {
+    e.preventDefault();
+    const newNumber = parseInt(e.target.firstChild.value)
+    console.log(newNumber);
+    updateCartItem(item, newNumber)
+  }
+
   return (
-    <>
+    <div>
       <Button variant="primary" onClick={() => changeView(Views.MAIN)}>
         Products
       </Button>
@@ -42,7 +49,18 @@ function Cart({ cart, changeView, deleteCartItem }) {
                 <th>{item.description}</th>
                 <th>{item.price}</th>
                 <th>{item.stock}</th>
-                <th>{item.number}</th>
+                <th>
+                  <Form
+                    key={item.name}
+                    onSubmit={e => handleUpdateCartItem(e, item)}
+                  >
+                    <Form.Control
+                      as="input"
+                      type="number"
+                      defaultValue={item.number}
+                    />
+                  </Form>
+                </th>
                 <th>
                   <Button variant="outline-danger" onClick={() => deleteCartItem(item)}>
                     Delete
@@ -53,8 +71,12 @@ function Cart({ cart, changeView, deleteCartItem }) {
           </tbody>
           <tfoot>
             <tr>
-              <th>Subtotal: {calculateTotalCost()}</th>
-              <th>Total Items: {cart.totalItems}</th>
+              <th>
+                <h4>Subtotal: {calculateTotalCost()}</h4>
+              </th>
+              <th>
+                <h4>Total Items: {cart.totalItems}</h4>
+              </th>
               <th>
                 <Button variant="primary">Checkout</Button>
               </th>
@@ -66,7 +88,7 @@ function Cart({ cart, changeView, deleteCartItem }) {
           <h3>There are no items in your cart at this time.</h3>
         </If>
       </Table>
-    </>
+    </div>
   );
 }
 
@@ -76,4 +98,6 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps, { changeView, deleteCartItem })(Cart);
+export default connect(mapStateToProps, { changeView, deleteCartItem, updateCartItem })(
+  Cart
+);
