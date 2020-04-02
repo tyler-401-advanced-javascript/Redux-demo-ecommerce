@@ -18,7 +18,8 @@ function InputForm({ createItem }) {
     <Form variant="sm" onSubmit={handleSubmit(submitForm)}>
       <Form.Control ref={register} type="name" placeholder="Name" name="name" />
       <Form.Control ref={register} as="select" placeholder="Category" name="category">
-        {Object.keys(CategoryList).filter(option => option !== CategoryList.ALL).map(option => {
+        <option></option>
+        {Object.keys(CategoryList.Filter).filter(option => option !== CategoryList.ALL).map(option => {
           return <option key={option}>{option}</option>
         })}
       </Form.Control>

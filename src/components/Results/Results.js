@@ -1,12 +1,14 @@
 import React from 'react';
 import classNames from 'classnames';
-import './Results.scss'
+import './Results.scss';
 import { Table, Button, Form } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { CategoryList } from '../../store/reducers/category';
-import { changeStock, deleteItem } from '../../store/actions';
+import * as actions from '../../store/actions';
 
-function Category({ products, category, deleteItem, changeStock }) {
+function Category({ products, category, deleteItem, changeStock, addCartItem }) {
+  //configure hook-forms
+
   const handleDelete = item => {
     console.log('deleted an item');
     deleteItem(item);
@@ -20,8 +22,16 @@ function Category({ products, category, deleteItem, changeStock }) {
     else alert('Stock must be zero or more');
   };
 
+  const handleAddCartItem = (item, e) => {
+    e.preventDefault();
+    console.log('got here');
+    const numberNewItems = parseInt(e.target.firstChild.value);
+    if (numberNewItems > 0) addCartItem(item, numberNewItems);
+    else alert('Cannot add zero items to cart');
+  };
+
   return (
-    <Table variant="sm" bordered>
+    <Table size="sm" bordered>
       <thead>
         <tr>
           <th>Name, {category}</th>
@@ -30,7 +40,7 @@ function Category({ products, category, deleteItem, changeStock }) {
           <th>Price</th>
           <th>Stock</th>
           <th>Change Stock</th>
-          <th></th>
+          <th>Add</th>
           <th></th>
         </tr>
       </thead>
@@ -53,7 +63,21 @@ function Category({ products, category, deleteItem, changeStock }) {
               </Form>
             </th>
             <th>
-              <Button variant="secondary" onClick={() => handleDelete(item)}>
+              <Form onSubmit={e => handleAddCartItem(item, e)}>
+                <Form.Control
+                  type="number"
+                  min={0}
+                  max={item.stock}
+                  defaultValue={1}
+                  style={{ width: '40%', display: 'inline' }}
+                />
+                <Button type="submit" variant="outline-primary" style={{marginInlineStart: '10px'}}>
+                  Cart++
+                </Button>
+              </Form>
+            </th>
+            <th>
+              <Button variant="outline-danger" onClick={() => handleDelete(item)}>
                 Delete
               </Button>
             </th>
@@ -74,4 +98,8 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps, { changeStock, deleteItem })(Category);
+export default connect(mapStateToProps, {
+  changeStock: actions.changeStock,
+  deleteItem: actions.deleteItem,
+  addCartItem: actions.addCartItem
+})(Category);

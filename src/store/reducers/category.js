@@ -7,7 +7,7 @@ export const CategoryList = {
   },
   Current: 'ALL',
 }
-//todo: fix this! 
+
 
 export default function category(state = CategoryList.Current, action) {
   switch (action.type) {
