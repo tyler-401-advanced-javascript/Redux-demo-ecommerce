@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import classNames from 'classnames';
 import './Results.scss';
 import { Table, Button, Form } from 'react-bootstrap';
@@ -6,8 +6,15 @@ import { connect } from 'react-redux';
 import { CategoryList } from '../../store/reducers/category';
 import * as actions from '../../store/actions';
 
-function Category({ products, category, deleteItem, changeStock, addCartItem }) {
-  //configure hook-forms
+
+function Category({ auth, products, category, deleteItem, changeStock, addCartItem, getAllProducts }) {
+
+  const getProducts = () => {
+    getAllProducts();
+  }
+
+  //on component render, get all products. 
+  useEffect(() => getProducts(), []) //eslint-disable-line
 
   const handleDelete = item => {
     console.log('deleted an item');
@@ -18,7 +25,7 @@ function Category({ products, category, deleteItem, changeStock, addCartItem }) 
     e.preventDefault();
     console.log('handled the stock change');
     const newStock = e.target.firstChild.value;
-    if (newStock >= 0) changeStock({ item, newStock: e.target.firstChild.value });
+    if (newStock >= 0) changeStock({ item, newStock: e.target.firstChild.value, token: auth.user.token });
     else alert('Stock must be zero or more');
   };
 
@@ -29,6 +36,8 @@ function Category({ products, category, deleteItem, changeStock, addCartItem }) 
     if (numberNewItems > 0) addCartItem(item, numberNewItems);
     else alert('Cannot add zero items to cart');
   };
+
+
 
   return (
     <Table size="sm" bordered>
@@ -58,6 +67,7 @@ function Category({ products, category, deleteItem, changeStock, addCartItem }) 
                   as="input"
                   type="number"
                   name="stock"
+                  min={0}
                   defaultValue={item.stock}
                 />
               </Form>
@@ -94,12 +104,16 @@ const mapStateToProps = state => {
       state.category === CategoryList.Filter.ALL
         ? state.products
         : state.products.filter(item => item.category === state.category),
-    category: state.category
+    category: state.category,
+    auth: state.auth
   };
 };
 
-export default connect(mapStateToProps, {
+const mapDispatchToProps = {
   changeStock: actions.changeStock,
   deleteItem: actions.deleteItem,
-  addCartItem: actions.addCartItem
-})(Category);
+  addCartItem: actions.addCartItem,
+  getAllProducts: actions.getAllProducts
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Category);

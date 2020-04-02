@@ -5,12 +5,12 @@ import { connect } from 'react-redux';
 import { createItem } from '../../store/actions';
 import { CategoryList } from '../../store/reducers/category'
 
-function InputForm({ createItem }) {
+function InputForm({ auth, createItem }) {
   const { register, handleSubmit } = useForm();
   const submitForm = (data, e) => {
     e.target.reset();
     console.log('here is your data: ', data);
-    createItem(data);
+    createItem(data, auth.user.token);
   };
   //{ name: 'Tyler', displayCategory: 'Person', category: Filter.PERSON, price: 55, description: 'string', stock: 5},
 
@@ -33,4 +33,10 @@ function InputForm({ createItem }) {
   );
 }
 
-export default connect(null, { createItem })(InputForm);
+const mapStateToProps = (state) => {
+  return {
+    auth: state.auth
+  }
+}
+
+export default connect(mapStateToProps, { createItem })(InputForm);
